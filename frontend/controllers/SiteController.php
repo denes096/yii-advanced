@@ -2,6 +2,8 @@
 namespace frontend\controllers;
 
 use frontend\models\ResendVerificationEmailForm;
+use frontend\models\UpdateUserForm;
+use frontend\models\User;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -9,11 +11,12 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\LoginForm;
+use frontend\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\web\NotFoundHttpException;
 
 /**
  * Site controller
@@ -134,6 +137,8 @@ class SiteController extends Controller
             ]);
         }
     }
+
+
 
     /**
      * Displays about page.
@@ -257,4 +262,52 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
+
+    public function actionProfile($id)
+    {
+        if (!Yii::$app->user->isGuest && $id == Yii::$app->user->getId()) {
+            $model = User::findOne($id);
+            return $this->render('profile', [
+                'model' => $model,
+            ]);
+        }
+        return $this->redirect(['site/index']);
+    }
+
+    /**
+     * @param $id
+     * @return User|null
+     * @throws NotFoundHttpException
+     */
+    protected function findModel($id)
+    {
+        if (($model = User::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionUpdate($id)
+    {
+        $user = $this->findModel($id);
+
+        $model = new UpdateUserForm();
+        $model->fillFrom($user);
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $user = $model->fillTo($user);
+            if(!$user->save()){
+                //TODO hibaüzenet
+            } else {
+                //TODO Siker
+            }
+            return $this->redirect(['site/profile', 'id' => $user->id]);
+        }
+
+        return $this->render('/site/update', [
+            'model' => $model,
+        ]);
+    }
+
 }

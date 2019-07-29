@@ -15,31 +15,48 @@ export DEBIAN_FRONTEND=noninteractive
 info "Configure timezone"
 timedatectl set-timezone ${timezone} --no-ask-password
 
-info "Prepare root password for MySQL"
-debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password \"''\""
-debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password \"''\""
-echo "Done!"
+info "Configure locales"
+echo 'hu_HU.UTF-8 UTF-8' >> /etc/locale.gen
+locale-gen
+
+wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add -
+echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+
+
 
 info "Update OS software"
 apt-get update
 apt-get upgrade -y
 
-info "Install additional software"
-apt-get install -y php7.0-curl php7.0-cli php7.0-intl php7.0-mysqlnd php7.0-gd php7.0-fpm php7.0-mbstring php7.0-xml unzip nginx mysql-server-5.7 php.xdebug
+# Install additional software
 
-info "Configure MySQL"
-sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
-mysql -uroot <<< "CREATE USER 'root'@'%' IDENTIFIED BY ''"
-mysql -uroot <<< "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'"
-mysql -uroot <<< "DROP USER 'root'@'localhost'"
-mysql -uroot <<< "FLUSH PRIVILEGES"
-echo "Done!"
+apt-get install -y vim ssh screen sudo less ntp ntpdate lsof rsync mc whois htop sysstat bzip2 tcpdump dstat dnsutils curl telnet
+apt-get install -y git memcached php7.0 php7.0-cli php7.0-curl php7.0-gd php7.0-intl php7.0-mbstring php7.0-mcrypt php7.0-pgsql php-memcached phpunit postgresql php-zip
+apt-get install -y php-xdebug
 
-info "Configure PHP-FPM"
-sed -i 's/user = www-data/user = vagrant/g' /etc/php/7.0/fpm/pool.d/www.conf
-sed -i 's/group = www-data/group = vagrant/g' /etc/php/7.0/fpm/pool.d/www.conf
-sed -i 's/owner = www-data/owner = vagrant/g' /etc/php/7.0/fpm/pool.d/www.conf
+info "Stopping apache"
+service apache2 stop
+
+info "Install nginx"
+apt-get install -y nginx
+
+# Configure PostgreSQL
+
+sed -i "s/# DO NOT DISABLE!/local all all trust\n# DO NOT DISABLE!/" /etc/postgresql/11/main/pg_hba.conf
+service postgresql restart
+
+db_user_name='denes'
+db_user_pass='asd123'
+db_name='ticket'
+
+# Initialize database: $db_name
+echo "CREATE USER $db_user_name WITH PASSWORD '$db_user_pass';" | psql -U postgres
+echo "CREATE DATABASE $db_name OWNER $db_user_name ENCODING 'UTF8' LC_COLLATE = 'hu_HU.UTF-8' LC_CTYPE = 'hu_HU.UTF-8' TEMPLATE = template0;" | psql -U postgres
+echo "ALTER SCHEMA public OWNER TO ${db_user_name};" | psql -U postgres ${db_name}
+
+
 cat << EOF > /etc/php/7.0/mods-available/xdebug.ini
+
 zend_extension=xdebug.so
 xdebug.remote_enable=1
 xdebug.remote_connect_back=1
@@ -56,10 +73,6 @@ info "Enabling site configuration"
 ln -s /app/vagrant/nginx/app.conf /etc/nginx/sites-enabled/app.conf
 echo "Done!"
 
-info "Initailize databases for MySQL"
-mysql -uroot <<< "CREATE DATABASE yii2advanced"
-mysql -uroot <<< "CREATE DATABASE yii2advanced_test"
-echo "Done!"
 
 info "Install composer"
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
