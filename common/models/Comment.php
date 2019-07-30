@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace common\models;
 
 use Yii;
 
@@ -14,7 +14,7 @@ use Yii;
  * @property int $ticket_id
  *
  * @property Ticket $ticket
- * @property Users $user
+ * @property User $user
  */
 class Comment extends \yii\db\ActiveRecord
 {
@@ -38,7 +38,7 @@ class Comment extends \yii\db\ActiveRecord
             [['user_id', 'ticket_id'], 'integer'],
             [['description'], 'string', 'max' => 255],
             [['ticket_id'], 'exist', 'skipOnError' => true, 'targetClass' => Ticket::className(), 'targetAttribute' => ['ticket_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -69,6 +69,6 @@ class Comment extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }

@@ -22,6 +22,7 @@ use yii\widgets\DetailView;
                 'name',
                 'email:email',
                 'regtime',
+                'lastlogintime',
             ],
         ]) ?>
 

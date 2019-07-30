@@ -2,14 +2,15 @@
 
 namespace frontend\models;
 
+use common\models\Comment;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\User;
+
 
 /**
- * UserSearch represents the model behind the search form of `app\models\User`.
+ * CommentSearch represents the model behind the search form of `frontend\models\Comment`.
  */
-class UserSearch extends User
+class CommentSearch extends Comment
 {
     /**
      * {@inheritdoc}
@@ -17,13 +18,19 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'email', 'password', 'regtime', 'lastlogintime'], 'safe'],
-            [['is_admin'], 'boolean'],
+            [['id', 'user_id', 'ticket_id'], 'integer'],
+            [['description', 'create_time'], 'safe'],
         ];
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
+    public function scenarios()
+    {
+        // bypass scenarios() implementation in the parent class
+        return Model::scenarios();
+    }
 
     /**
      * Creates data provider instance with search query applied
@@ -34,7 +41,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find()->where(['is_admin' => User::STATUS_COMMON]);
+        $query = Comment::find();
 
         // add conditions that should always apply here
 
@@ -53,14 +60,12 @@ class UserSearch extends User
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'regtime' => $this->regtime,
-            'lastlogintime' => $this->lastlogintime,
-            'is_admin' => $this->is_admin,
+            'create_time' => $this->create_time,
+            'user_id' => $this->user_id,
+            'ticket_id' => $this->ticket_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'name', $this->name])
-            ->andFilterWhere(['ilike', 'email', $this->email])
-            ->andFilterWhere(['ilike', 'password', $this->password]);
+        $query->andFilterWhere(['ilike', 'description', $this->description]);
 
         return $dataProvider;
     }

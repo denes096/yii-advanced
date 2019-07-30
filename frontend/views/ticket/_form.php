@@ -4,8 +4,9 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Ticket */
+/* @var $model frontend\models\Ticket */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $comment_model common\models\Comment */
 ?>
 
 <div class="ticket-form">
@@ -14,17 +15,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'createtime')->textInput() ?>
-
-    <?= $form->field($model, 'is_open')->checkbox() ?>
-
-    <?= $form->field($model, 'user_id')->textInput() ?>
-
-    <?= $form->field($model, 'admin_id')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-    </div>
+    <?= $this->render('/comment/_form', [
+        'model' => $comment_model,
+    ]) ?>
 
     <?php ActiveForm::end(); ?>
 

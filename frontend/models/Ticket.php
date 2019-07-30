@@ -1,86 +1,37 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: denes
+ * Date: 7/29/19
+ * Time: 4:58 PM
+ */
 
 namespace frontend\models;
 
+
 use Yii;
 
-/**
- * This is the model class for table "ticket".
- *
- * @property int $id
- * @property string $title
- * @property string $createtime
- * @property bool $is_open
- * @property int $user_id
- * @property int $admin_id
- *
- * @property Comment[] $comments
- * @property User $user
- * @property User $admin
- */
-class Ticket extends \yii\db\ActiveRecord
+class Ticket extends \common\models\Ticket
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public function beforeSave($insert)
     {
-        return 'ticket';
+        if(!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        try {
+            $this->user_id = Yii::$app->user->getId();
+            self::createDate();
+        } catch (\Exception $e) {
+            //TODO error
+        }
+
+        return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['title'], 'required'],
-            [['createtime'], 'safe'],
-            [['is_open'], 'boolean'],
-            [['user_id', 'admin_id'], 'default', 'value' => null],
-            [['user_id', 'admin_id'], 'integer'],
-            [['title'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['admin_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['admin_id' => 'id']],
-        ];
+    public function createDate() {
+        date_default_timezone_set('Europe/Budapest');
+        $this->createtime = date("Y-m-d H:i:s");
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'createtime' => 'Createtime',
-            'is_open' => 'Is Open',
-            'user_id' => 'User ID',
-            'admin_id' => 'Admin ID',
-        ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getComments()
-    {
-        return $this->hasMany(Comment::className(), ['ticket_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAdmin()
-    {
-        return $this->hasOne(Users::className(), ['id' => 'admin_id']);
-    }
 }

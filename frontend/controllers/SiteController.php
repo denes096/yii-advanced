@@ -2,16 +2,17 @@
 namespace frontend\controllers;
 
 use frontend\models\ResendVerificationEmailForm;
-use frontend\models\UpdateUserForm;
 use frontend\models\User;
 use frontend\models\VerifyEmailForm;
 use Yii;
+use yii\base\Action;
+use yii\base\InlineAction;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use frontend\models\LoginForm;
+use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -70,6 +71,39 @@ class SiteController extends Controller
         ];
     }
 
+//    /**
+//     * Before logout we want to update the frontend/user's last login field
+//     * @param Action $action
+//     * @return bool|void
+//     * @throws BadRequestHttpException
+//     */
+//    public function beforeAction($action)
+//    {
+//        if($action->id == 'logout' && !Yii::$app->user->isGuest){
+//            $user = User::findOne(Yii::$app->user->getId());
+//            $user->lastlogintime = 'asd';
+//        }
+//
+//        if (!parent::beforeAction($action)) {
+//            return false;
+//        }
+//
+//        return true;
+//    }
+//
+//    public function afterAction($action, $result)
+//    {
+//        $result = parent::afterAction($action, $result);
+//
+//        if($action->id == 'login' && !Yii::$app->user->isGuest){
+//            $user = User::findOne(Yii::$app->user->getId());
+//            $user->current_login_time = strtotime('now'.'CEST');
+//            var_dump($user);
+//            die();
+//        }
+//        return $result;
+//    }
+
     /**
      * Displays homepage.
      *
@@ -93,6 +127,14 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            $user = User::findOne(Yii::$app->user->getId());
+            try {
+                $user->updateLoginTime();
+                $user->save();
+                Yii::$app->session->setFlash('success','Success when saving login time');
+            } catch(\Exception $e) {
+                Yii::$app->session->setFlash('error','Error when saving login time');
+            }
             return $this->goBack();
         } else {
             $model->password = '';
@@ -260,53 +302,6 @@ class SiteController extends Controller
 
         return $this->render('resendVerificationEmail', [
             'model' => $model
-        ]);
-    }
-
-    public function actionProfile($id)
-    {
-        if (!Yii::$app->user->isGuest && $id == Yii::$app->user->getId()) {
-            $model = User::findOne($id);
-            return $this->render('profile', [
-                'model' => $model,
-            ]);
-        }
-        return $this->redirect(['site/index']);
-    }
-
-    /**
-     * @param $id
-     * @return User|null
-     * @throws NotFoundHttpException
-     */
-    protected function findModel($id)
-    {
-        if (($model = User::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionUpdate($id)
-    {
-        $user = $this->findModel($id);
-
-        $model = new UpdateUserForm();
-        $model->fillFrom($user);
-
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $user = $model->fillTo($user);
-            if(!$user->save()){
-                //TODO hibaüzenet
-            } else {
-                //TODO Siker
-            }
-            return $this->redirect(['site/profile', 'id' => $user->id]);
-        }
-
-        return $this->render('/site/update', [
-            'model' => $model,
         ]);
     }
 

@@ -2,20 +2,17 @@
 
 namespace frontend\controllers;
 
-use common\models\Comment;
-use frontend\models\CommentSearch;
-use frontend\models\Ticket;
-use frontend\models\UserSearch;
 use Yii;
-use frontend\models\TicketSearch;
+use frontend\models\Comment;
+use frontend\models\CommentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TicketController implements the CRUD actions for Ticket model.
+ * CommentController implements the CRUD actions for Comment model.
  */
-class TicketController extends Controller
+class CommentController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -33,12 +30,12 @@ class TicketController extends Controller
     }
 
     /**
-     * Lists all Ticket models.
+     * Lists all Comment models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new TicketSearch();
+        $searchModel = new CommentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -48,7 +45,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Displays a single Ticket model.
+     * Displays a single Comment model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -61,14 +58,13 @@ class TicketController extends Controller
     }
 
     /**
-     * Creates a new Ticket model.
+     * Creates a new Comment model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Ticket();
-        $comment_model = new Comment();
+        $model = new Comment();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -76,12 +72,11 @@ class TicketController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'comment_model' => $comment_model,
         ]);
     }
 
     /**
-     * Updates an existing Ticket model.
+     * Updates an existing Comment model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -101,7 +96,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Deletes an existing Ticket model.
+     * Deletes an existing Comment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -115,15 +110,15 @@ class TicketController extends Controller
     }
 
     /**
-     * Finds the Ticket model based on its primary key value.
+     * Finds the Comment model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Ticket the loaded model
+     * @return Comment the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Ticket::findOne($id)) !== null) {
+        if (($model = Comment::findOne($id)) !== null) {
             return $model;
         }
 

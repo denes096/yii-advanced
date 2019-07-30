@@ -1,49 +1,23 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: denes
+ * Date: 7/29/19
+ * Time: 3:50 PM
+ */
 
 namespace frontend\models;
 
-use yii\base\Model;
+use Yii;
 use yii\data\ActiveDataProvider;
-use frontend\models\Ticket;
 
-/**
- * TicketSearch represents the model behind the search form of `app\models\Ticket`.
- */
-class TicketSearch extends Ticket
+class TicketSearch extends \common\models\TicketSearch
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['id', 'user_id', 'admin_id'], 'integer'],
-            [['title', 'createtime'], 'safe'],
-            [['is_open'], 'boolean'],
-        ];
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
-
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
-        $query = Ticket::find();
 
-        // add conditions that should always apply here
+        $query = Ticket::find()->where(['user_id' => \Yii::$app->user->getId()]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
