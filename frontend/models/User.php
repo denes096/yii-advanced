@@ -12,9 +12,10 @@ namespace frontend\models;
 class User extends \common\models\User
 {
 
+    //TODO make a loginform model if needed only for common user search
     public static function findByUserEmail($email)
     {
-        return static::find()->where(['email'=> $email,'is_admin' => self::STATUS_COMMON])->one();
+        return static::find(['email'=> $email])->where(['is_admin' => self::STATUS_COMMON])->one();
     }
 
     public function updateLoginTime()

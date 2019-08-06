@@ -2,14 +2,12 @@
 
 namespace frontend\controllers;
 
-
 use Yii;
-use common\models\Comment;
+use frontend\models\Comment;
 use frontend\models\CommentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
  * CommentController implements the CRUD actions for Comment model.
@@ -67,6 +65,7 @@ class CommentController extends Controller
     public function actionCreate()
     {
         $model = new Comment();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }

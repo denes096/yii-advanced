@@ -16,10 +16,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
     <?= $this->render('/comment/_form', [
-        'comment_model' => $comment_model,
-        'form' => $form,
+        'model' => $comment_model,
     ]) ?>
-
 
     <?php ActiveForm::end(); ?>
 

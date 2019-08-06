@@ -22,7 +22,6 @@ class TicketSearch extends Ticket
         ];
     }
 
-
     /**
      * {@inheritdoc}
      */

@@ -19,7 +19,7 @@ class UpdateUserForm extends Model
     public function rules()
     {
         return [
-          [['name'], 'required'],
+          [['name', 'password'], 'required'],
           ['name', 'string', 'min' => 2, 'max' => 255],
           ['password', 'string', 'min' => 8],
         ];

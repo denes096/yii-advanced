@@ -8,11 +8,9 @@ use frontend\models\Ticket;
 use frontend\models\UserSearch;
 use Yii;
 use frontend\models\TicketSearch;
-use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
  * TicketController implements the CRUD actions for Ticket model.
@@ -42,6 +40,7 @@ class TicketController extends Controller
     {
         $searchModel = new TicketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -58,7 +57,6 @@ class TicketController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'comments' => $this->findModel($id)->comments,
         ]);
     }
 
@@ -73,8 +71,6 @@ class TicketController extends Controller
         $comment_model = new Comment();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $comment_model->ticket_id = $model->id;
-            if($comment_model->load(Yii::$app->request->post()) && $comment_model->save())
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -132,23 +128,5 @@ class TicketController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionReply($id)
-    {
-
-        $comment_model = new Comment();
-        $comment_model->ticket_id = $id;
-
-        if ($comment_model->load(Yii::$app->request->post()) && $comment_model->save()) {
-            $comment_model->asd = UploadedFile::getInstance($comment_model,'asd');
-            $comment_model->upload();
-            $comment_model->save();
-            return $this->redirect(['view', 'id' => $comment_model->ticket_id]);
-        }
-
-        return $this->render('/comment/create', [
-            'comment_model' => $comment_model,
-        ]);
     }
 }

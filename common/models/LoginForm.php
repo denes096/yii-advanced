@@ -14,7 +14,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    protected $_user;
+    private $_user;
 
 
     /**
@@ -77,5 +77,4 @@ class LoginForm extends Model
 
         return $this->_user;
     }
-
 }

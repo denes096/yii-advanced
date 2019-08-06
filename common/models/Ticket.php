@@ -13,7 +13,6 @@ use Yii;
  * @property bool $is_open
  * @property int $user_id
  * @property int $admin_id
- * @property string $modified_time
  *
  * @property Comment[] $comments
  * @property User $user
@@ -36,7 +35,7 @@ class Ticket extends \yii\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
-            [['createtime','modified_time'], 'safe'],
+            [['createtime'], 'safe'],
             [['is_open'], 'boolean'],
             [['user_id', 'admin_id'], 'default', 'value' => null],
             [['user_id', 'admin_id'], 'integer'],
@@ -83,30 +82,5 @@ class Ticket extends \yii\db\ActiveRecord
     public function getAdmin()
     {
         return $this->hasOne(User::className(), ['id' => 'admin_id']);
-    }
-
-    public function beforeSave($insert)
-    {
-        if(!parent::beforeSave($insert)) {
-            return false;
-        }
-
-        if($insert) {
-            try {
-                $this->user_id = Yii::$app->user->getId();
-                self::createDate();
-            } catch (\Exception $e) {
-                //TODO error
-            }
-        }
-
-        return true;
-    }
-
-    public function createDate()
-    {
-        date_default_timezone_set('Europe/Budapest');
-        $this->modified_time = date("Y-m-d H:i:s");
-        $this->createtime = date("Y-m-d H:i:s");
     }
 }

@@ -26,7 +26,6 @@ class m190724_124058_users extends Migration
             'id' => $this->primaryKey(),
             'title' => $this->string()->notNull(),
             'createtime' => 'timestamp with time zone',
-            'modified_time' => 'timestamp with time zone',
             'is_open' => $this->boolean()->defaultValue(true),
             'user_id' => $this->integer(),
             'admin_id' => $this->integer()
@@ -37,8 +36,7 @@ class m190724_124058_users extends Migration
             'description' => $this->string()->notNull(),
             'create_time' => 'timestamp with time zone',
             'user_id' => $this->integer(),
-            'ticket_id' => $this->integer(),
-            'picture_url' => $this->string(),
+            'ticket_id' => $this->integer()
         ]);
 
         $this->addForeignKey(
@@ -57,7 +55,7 @@ class m190724_124058_users extends Migration
             'admin_id',
             'users',
             'id',
-            'RESTRICT',
+            'CASCADE',
             'CASCADE'
         );
 

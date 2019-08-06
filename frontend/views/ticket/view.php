@@ -4,48 +4,38 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Ticket */
-/* @var $comments common\models\Comment */
-/* @var $comment common\models\Comment */
+/* @var $model app\models\Ticket */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Tickets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+\yii\web\YiiAsset::register($this);
 ?>
 <div class="ticket-view">
 
-    <h1><?= Html::encode('Ticket: '.$this->title) ?></h1>
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <p>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+    </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            'id',
+            'title',
+            'createtime',
             'is_open:boolean',
-            'admin_id' => 'admin.name:text:Ticket Admin',
+            'user_id',
+            'admin_id',
         ],
     ]) ?>
-
-    <?php foreach ($comments as $comment): ?>
-    <div class="row" style="padding: 10px" id="comment_div">
-        <div class="col">
-            <?php if($comment->user->is_admin == true) { ?>
-            <div class="col bg-danger" id="created_by_at">
-                <?php } else { ?>
-                <div class="col bg-primary" id="created_by_at">
-                    <?php }; ?>
-                    <?= Html::encode("Created by: {$comment->user->name} at: {$comment->create_time}")?>
-                </div>
-            </div>
-            <div class="col bg-info">
-                <?= Html::encode("{$comment->description}") ?>
-            </div>
-            <div class="col bg-info text-center" >
-                <?= Html::img("/uploads/{$comment->id}.jpg", ['width' => '400px']) ?>
-            </div>
-        </div>
-    <?php endforeach; ?>
-
-    <p>
-        <?= Html::a('Reply', ['ticket/reply/'.$model->id], ['class' => 'btn btn-success']) ?>
-    </p>
 
 </div>
