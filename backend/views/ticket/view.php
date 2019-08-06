@@ -1,6 +1,12 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: denes
+ * Date: 8/5/19
+ * Time: 10:46 AM
+ */
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -20,26 +26,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'is_open:boolean',
+            'user_id' => 'user.name:text:Created by',
             'admin_id' => 'admin.name:text:Ticket Admin',
         ],
     ]) ?>
 
     <?php foreach ($comments as $comment): ?>
-    <div class="row" style="padding: 10px" id="comment_div">
-        <div class="col">
-            <?php if($comment->user->is_admin == true) { ?>
-            <div class="col bg-danger" id="created_by_at">
+        <div class="row" style="padding: 10px" id="comment_div">
+            <div class="col">
+                <?php if($comment->user->is_admin == true) { ?>
+                    <div class="col bg-danger" id="created_by_at">
                 <?php } else { ?>
-                <div class="col bg-primary" id="created_by_at">
-                    <?php }; ?>
-                    <?= Html::encode("Created by: {$comment->user->name} at: {$comment->create_time}")?>
+                    <div class="col bg-primary" id="created_by_at">
+                <?php }; ?>
+                    <?=Html::encode("Created by: {$comment->user->name} at: {$comment->create_time}")?>
                 </div>
             </div>
             <div class="col bg-info">
                 <?= Html::encode("{$comment->description}") ?>
-            </div>
-            <div class="col bg-info text-center" >
-                <?= Html::img("/uploads/{$comment->id}.jpg", ['width' => '400px']) ?>
             </div>
         </div>
     <?php endforeach; ?>

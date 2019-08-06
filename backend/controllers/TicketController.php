@@ -1,50 +1,50 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: denes
+ * Date: 8/5/19
+ * Time: 9:35 AM
+ */
 
-namespace frontend\controllers;
+namespace backend\controllers;
 
+
+use backend\models\TicketSearch;
 use common\models\Comment;
-use frontend\models\CommentSearch;
-use frontend\models\Ticket;
-use frontend\models\UserSearch;
 use Yii;
-use frontend\models\TicketSearch;
-use yii\data\ArrayDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
+use common\models\Ticket;
 
-/**
- * TicketController implements the CRUD actions for Ticket model.
- */
 class TicketController extends Controller
 {
+
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
     }
 
-    /**
-     * Lists all Ticket models.
-     * @return mixed
-     */
     public function actionIndex()
     {
         $searchModel = new TicketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+           'searchModel' => $searchModel,
+           'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -59,28 +59,6 @@ class TicketController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
             'comments' => $this->findModel($id)->comments,
-        ]);
-    }
-
-    /**
-     * Creates a new Ticket model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Ticket();
-        $comment_model = new Comment();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $comment_model->ticket_id = $model->id;
-            if($comment_model->load(Yii::$app->request->post()) && $comment_model->save())
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-            'comment_model' => $comment_model,
         ]);
     }
 
@@ -119,6 +97,45 @@ class TicketController extends Controller
     }
 
     /**
+     * @param integer $id
+     * @return string|\yii\web\Response
+     */
+    public function actionReply($id)
+    {
+        $comment_model = new Comment();
+        $comment_model->ticket_id = $id;
+
+        if ($comment_model->load(Yii::$app->request->post()) && $comment_model->save()) {
+            return $this->redirect(['view', 'id' => $comment_model->ticket_id]);
+        }
+
+        return $this->render('/comment/create', [
+            'comment_model' => $comment_model,
+        ]);
+    }
+
+    /**
+     * Gets the selected rows when admin wants to handle the ticket
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionAssignedrows()
+    {
+        $select = Yii::$app->request->post('selection');
+        if(!empty($select)) {
+            foreach ($select as $id) {
+                $model = self::findModel($id);
+                $model->admin_id = Yii::$app->user->id;
+                if(!$model->save()) {
+                    Yii::$app->session->setFlash('Cannot assign!');
+                }
+            }
+        };
+
+        return $this->redirect(['index']);
+    }
+
+    /**
      * Finds the Ticket model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -132,23 +149,5 @@ class TicketController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionReply($id)
-    {
-
-        $comment_model = new Comment();
-        $comment_model->ticket_id = $id;
-
-        if ($comment_model->load(Yii::$app->request->post()) && $comment_model->save()) {
-            $comment_model->asd = UploadedFile::getInstance($comment_model,'asd');
-            $comment_model->upload();
-            $comment_model->save();
-            return $this->redirect(['view', 'id' => $comment_model->ticket_id]);
-        }
-
-        return $this->render('/comment/create', [
-            'comment_model' => $comment_model,
-        ]);
     }
 }

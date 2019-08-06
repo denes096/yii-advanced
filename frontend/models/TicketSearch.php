@@ -10,12 +10,14 @@ namespace frontend\models;
 
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\Sort;
 
 class TicketSearch extends \common\models\TicketSearch
 {
 
     public function search($params)
     {
+
 
         $query = Ticket::find()->where(['user_id' => \Yii::$app->user->getId()]);
 

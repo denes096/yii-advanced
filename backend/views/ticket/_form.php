@@ -1,12 +1,17 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: denes
+ * Date: 8/5/19
+ * Time: 11:54 AM
+ */
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Ticket */
+/* @var $model common\models\Ticket */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $comment_model common\models\Comment */
 ?>
 
 <div class="ticket-form">
@@ -14,12 +19,6 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-
-    <?= $this->render('/comment/_form', [
-        'comment_model' => $comment_model,
-        'form' => $form,
-    ]) ?>
-
 
     <?php ActiveForm::end(); ?>
 

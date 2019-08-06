@@ -1,37 +1,18 @@
 <?php
-namespace common\models;
+/**
+ * Created by PhpStorm.
+ * User: denes
+ * Date: 7/30/19
+ * Time: 4:16 PM
+ */
+
+namespace backend\models;
+
 
 use Yii;
-use yii\base\Model;
 
-
-/**
- * Login form
- */
-class LoginForm extends Model
+class LoginForm extends \common\models\LoginForm
 {
-    public $email;
-    public $password;
-    public $rememberMe = true;
-
-    protected $_user;
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            // username and password are both required
-            [['email', 'password'], 'required'],
-            // rememberMe must be a boolean value
-            ['rememberMe', 'boolean'],
-            // password is validated by validatePassword()
-            ['password', 'validatePassword'],
-            ['email', 'email'],
-        ];
-    }
 
     /**
      * Validates the password.

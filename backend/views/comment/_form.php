@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: denes
+ * Date: 8/5/19
+ * Time: 11:21 AM
+ */
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -10,12 +15,8 @@ use yii\widgets\ActiveForm;
 
 <div class="comment-form">
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
-
+    <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($comment_model, 'description')->textarea(['rows' => 10]) ?>
-
-    <?= $form->field($comment_model, 'asd')->fileInput() ?>
-
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
