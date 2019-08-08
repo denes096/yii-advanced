@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 
 /**
@@ -105,7 +106,10 @@ class Comment extends \yii\db\ActiveRecord
 
     public function upload()
     {
-        $this->picture_url = 'uploads/' . $this->id . '.jpg';
+        if(!file_exists(Url::to('@frontend_web/images/'))) {
+            mkdir(Url::to('@frontend_web/images/'),0777,true);
+        }
+        $this->picture_url = Url::to('@frontend_web/images/') . '/' . $this->id . '.jpg';
         $this->asd->saveAs($this->picture_url);
     }
 }

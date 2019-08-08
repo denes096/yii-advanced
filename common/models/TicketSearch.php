@@ -41,7 +41,7 @@ class TicketSearch extends Ticket
      */
     public function search($params)
     {
-        $query = Ticket::find();
+        $query = Ticket::find()->orderBy(['is_open' => SORT_DESC, 'createtime' => SORT_DESC]);
 
         // add conditions that should always apply here
 

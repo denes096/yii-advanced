@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -39,13 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= Html::encode("{$comment->description}") ?>
             </div>
             <div class="col bg-info text-center" >
-                <?= Html::img("/uploads/{$comment->id}.jpg", ['width' => '400px']) ?>
+                <?= Html::img(Url::to("/images/{$comment->id}.jpg"), ['width' => '400px']) ?>
             </div>
         </div>
     <?php endforeach; ?>
 
     <p>
-        <?= Html::a('Reply', ['ticket/reply/'.$model->id], ['class' => 'btn btn-success']) ?>
+        <?php
+            echo Html::a('Reply', ['ticket/reply/'.$model->id], ['class' => 'btn btn-success'])
+        ?>
     </p>
 
 </div>

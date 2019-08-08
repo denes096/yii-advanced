@@ -6,6 +6,7 @@ namespace frontend\controllers;
 use Yii;
 use common\models\Comment;
 use frontend\models\CommentSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,6 +17,7 @@ use yii\web\UploadedFile;
  */
 class CommentController extends Controller
 {
+
     /**
      * {@inheritdoc}
      */
@@ -26,6 +28,15 @@ class CommentController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];

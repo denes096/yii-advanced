@@ -31,6 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'rowOptions' => function ($model, $index, $widget, $grid){
+            if(!$model->is_open){
+                return ['class' => 'warning'];
+            }
+        },
         'columns' => [
             'user_id' => 'user.name:text:Author',
             'title',
@@ -38,9 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'is_open:boolean:Open',
             'admin_id' => 'admin.name:text:Assigned Admin',
             ['class' => 'yii\grid\ActionColumn'],
-            ['class' => 'yii\grid\CheckboxColumn', 'checkboxOptions' => function($searchModel) {
-                return ['value' => $searchModel->id];
-            }],
+            ['class' => 'yii\grid\CheckboxColumn',
+                'checkboxOptions' => function($searchModel) {
+                    if($searchModel->admin_id) {
+                        return ['style' => ['display' => 'none']];
+                    }
+                    return ['value' => $searchModel->id];
+                }],
         ],
     ]); ?>
 

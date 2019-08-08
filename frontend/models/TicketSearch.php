@@ -8,6 +8,7 @@
 
 namespace frontend\models;
 
+use app\models\TicketQuery;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\Sort;
@@ -15,11 +16,16 @@ use yii\data\Sort;
 class TicketSearch extends \common\models\TicketSearch
 {
 
+    public static function find()
+    {
+        return new TicketQuery(get_called_class());
+    }
+
     public function search($params)
     {
 
 
-        $query = Ticket::find()->where(['user_id' => \Yii::$app->user->getId()]);
+        $query = Ticket::find()->where(['user_id' => \Yii::$app->user->getId()])->orderBy(['is_open' => SORT_DESC, 'createtime' => SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

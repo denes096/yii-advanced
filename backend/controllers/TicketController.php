@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 
 use backend\models\TicketSearch;
+use backend\models\User;
 use common\models\Comment;
 use Yii;
 use yii\filters\AccessControl;
@@ -32,6 +33,9 @@ class TicketController extends Controller
                     [
                         'allow' => true,
                         'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity->is_admin;
+                        }
                     ],
                 ],
             ],
@@ -112,6 +116,19 @@ class TicketController extends Controller
         return $this->render('/comment/create', [
             'comment_model' => $comment_model,
         ]);
+    }
+
+    /**clsoses the selected ticket
+     * @param integer $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionClose($id){
+        $ticket = $this->findModel($id);
+        $ticket->is_open = false;
+        $ticket->save();
+
+        return $this->redirect('/ticket/'.$id);
     }
 
     /**

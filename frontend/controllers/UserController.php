@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use frontend\models\User;
 use frontend\models\UserSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -25,6 +26,15 @@ class UserController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -73,6 +83,10 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
+        if (!$this->validateIdentity($id)) {
+            return $this->redirect(['site/index']);
+        }
+
         $user = $this->findModel($id);
 
         $model = new UpdateUserForm();
@@ -130,12 +144,21 @@ class UserController extends Controller
      */
     public function actionProfile($id)
     {
-        if (!Yii::$app->user->isGuest && $id == Yii::$app->user->getId()) {
+        if ($this->validateIdentity($id)) {
             $model = User::findOne($id);
             return $this->render('profile', [
                 'model' => $model,
             ]);
         }
         return $this->redirect(['site/index']);
+    }
+
+    /** evaulates if user has premission to access the page
+     * @param integer $id requested parameter
+     * @return bool
+     */
+    public function validateIdentity($id)
+    {
+        return (!Yii::$app->user->isGuest && $id == Yii::$app->user->getId());
     }
 }

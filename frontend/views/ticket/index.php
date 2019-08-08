@@ -22,13 +22,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'rowOptions' => function ($model, $index, $widget, $grid){
+              if(!$model->is_open){
+                return ['class' => 'warning'];
+              }
+        },
         'columns' => [
             'title',
             'createtime',
             'user_id' => 'user.name:text:Author',
+            'is_open:boolean',
             ['class' => 'yii\grid\ActionColumn',
                 'template' => '{view}',
             ],
+
         ],
     ]); ?>
 

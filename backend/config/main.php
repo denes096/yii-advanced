@@ -47,6 +47,12 @@ return [
                 '<controller:[\w-]+>/<action:[\w-]+>' => '<controller>/<action>',
             ],
         ],
+        'urlManagerFrontend' => [
+            'class' => 'yii\web\urlManager',
+            'baseUrl' => 'http://y2aa-frontend.test/',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
     ],
     'params' => $params,
 ];

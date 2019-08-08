@@ -45,7 +45,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
         $menuItems[] = ['label' => 'My Profile', 'url' => ['/user/profile','id'=>Yii::$app->user->id]];
-        $menuItems[] = ['label' => 'Tickets', 'url' => ['/ticket/','id'=>Yii::$app->user->id]];
+        $menuItems[] = ['label' => 'Tickets', 'url' => ['/ticket/',]];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
