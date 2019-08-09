@@ -1,8 +1,8 @@
 <?php
 
-namespace app\models;
+namespace common\models;
 
-use frontend\models\Ticket;
+use common\models\Ticket;
 
 /**
  * This is the ActiveQuery class for [[Ticket]].
@@ -34,9 +34,28 @@ class TicketQuery extends \yii\db\ActiveQuery
         return parent::one($db);
     }
 
+    /**
+     * @param integer $id
+     * @return TicketQuery
+     */
     public function ofId($id)
     {
         return $this->andWhere(['id' => $id]);
     }
+
+    /**
+     * @param boolean $isopen
+     * @return TicketQuery
+     */
+    public function ofIsopen($isopen)
+    {
+        return $this->andWhere(['is_open' => $isopen]);
+    }
+
+    public function ofUserId($id)
+    {
+        return $this->andWhere(['user_id' => $id]);
+    }
+
 
 }

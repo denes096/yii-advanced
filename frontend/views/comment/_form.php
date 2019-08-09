@@ -5,16 +5,16 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $comment_model common\models\Comment */
+/* @var $commentModel common\models\Comment */
 ?>
 
 <div class="comment-form">
 
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <?= $form->field($comment_model, 'description')->textarea(['rows' => 10]) ?>
+    <?= $form->field($commentModel, 'description')->textarea(['rows' => 10]) ?>
 
-    <?= $form->field($comment_model, 'asd')->fileInput() ?>
+    <?= $form->field($commentModel, 'picture')->fileInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

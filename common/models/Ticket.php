@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\models\TicketQuery;
 use Yii;
 
 /**
@@ -59,6 +60,11 @@ class Ticket extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'admin_id' => 'Admin ID',
         ];
+    }
+
+    public static function find()
+    {
+        return new TicketQuery(get_called_class());
     }
 
     /**

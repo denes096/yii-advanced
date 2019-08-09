@@ -1,14 +1,10 @@
 <?php
-
 namespace frontend\controllers;
 
 use common\models\Comment;
-use frontend\models\CommentSearch;
-use frontend\models\Ticket;
-use frontend\models\UserSearch;
+use common\models\Ticket;
 use Yii;
 use frontend\models\TicketSearch;
-use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -66,14 +62,10 @@ class TicketController extends Controller
      */
     public function actionView($id)
     {
-//        if(!$this->validateIdentity($id)) {
-//            return $this->redirect(['ticket/']);
-//        }
-
         return $this->render('view', [
             'model' => $this->findModel($id),
             'comments' => $this->findModel($id)->comments,
-        ]);
+            ]);
     }
 
     /**
@@ -83,65 +75,27 @@ class TicketController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Ticket();
-        $comment_model = new Comment();
+        $ticketModel = new Ticket();
+        $commentModel = new Comment();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $comment_model->ticket_id = $model->id;
+        if ($ticketModel->load(Yii::$app->request->post()) && $ticketModel->save()) {
+            $commentModel->ticket_id = $ticketModel->id;
 
-            if($comment_model->load(Yii::$app->request->post()) && $comment_model->save()) {
-                $comment_model->asd = UploadedFile::getInstance($comment_model,'asd');
-                if($comment_model->asd) {
-                    $comment_model->upload();
-                    $comment_model->save();
+            if ($commentModel->load(Yii::$app->request->post()) && $commentModel->save()) {
+                $commentModel->picture = UploadedFile::getInstance($commentModel,'picture');
+
+                if ($commentModel->picture) {
+                    $commentModel->upload();
+                    $commentModel->save();
                 }
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['view', 'id' => $ticketModel->id]);
             }
         }
-
         return $this->render('create', [
-            'model' => $model,
-            'comment_model' => $comment_model,
+            'ticketModel' => $ticketModel,
+            'commentModel' => $commentModel,
         ]);
     }
-
-//    /**
-//     * Updates an existing Ticket model.
-//     * If update is successful, the browser will be redirected to the 'view' page.
-//     * @param integer $id
-//     * @return mixed
-//     * @throws NotFoundHttpException if the model cannot be found
-//     */
-//    public function actionUpdate($id)
-//    {
-//        if(!$this->validateIdentity($id)) {
-//            return $this->redirect(['ticket/']);
-//        }
-//
-//        $model = $this->findModel($id);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('update', [
-//            'model' => $model,
-//        ]);
-//    }
-//
-//    /**
-//     * Deletes an existing Ticket model.
-//     * If deletion is successful, the browser will be redirected to the 'index' page.
-//     * @param integer $id
-//     * @return mixed
-//     * @throws NotFoundHttpException if the model cannot be found
-//     */
-//    public function actionDelete($id)
-//    {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
 
     /**
      * Finds the Ticket model based on its primary key value.
@@ -159,42 +113,36 @@ class TicketController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**
+     * Makes comments for the ticket. Generates a new Comment, sets the key for the ticket.
+     * @param integer $id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
     public function actionReply($id)
     {
-//        if(!$this->validateIdentity($id)) {
-//            return $this->redirect(['ticket/']);
-//        }
+        $commentModel = new Comment();
+        $commentModel->ticket_id = $id;
 
-        $comment_model = new Comment();
-        $comment_model->ticket_id = $id;
+        if ($commentModel->load(Yii::$app->request->post()) && $commentModel->save()) {
+            $commentModel->picture = UploadedFile::getInstance($commentModel,'picture');
 
-        if ($comment_model->load(Yii::$app->request->post()) && $comment_model->save()) {
-            $comment_model->asd = UploadedFile::getInstance($comment_model,'asd');
-            if($comment_model->asd) {
-                $comment_model->upload();
-                $comment_model->save();
-
+            if($commentModel->picture) {
+                $commentModel->upload();
             }
             $ticket_model = $this->findModel($id);
             $ticket_model->is_open = true;
-            $ticket_model->save();
 
-            return $this->redirect(['view', 'id' => $comment_model->ticket_id]);
+            if ($commentModel->save() && $ticket_model->save()) {
+                Yii::$app->session->setFlash('success','comment was created');
+                return $this->redirect(['view', 'id' => $commentModel->ticket_id]);
+            }
+            Yii::$app->session->setFlash('error','Problem during reply');
+            return $this->redirect('../index');
         }
 
         return $this->render('/comment/create', [
-            'comment_model' => $comment_model,
+            'commentModel' => $commentModel,
         ]);
     }
-
-//    /** evaulates if user has premission to access the page
-//     * @param integer $id requested parameter
-//     * @return bool
-//     */
-//    public function validateIdentity($id)
-//    {
-//        return (!Yii::$app->user->isGuest && $this->findModel($id)->user_id == Yii::$app->user->getId());
-//    }
-
-
 }

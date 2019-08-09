@@ -9,6 +9,7 @@
 namespace backend\models;
 
 
+use common\models\User;
 use yii\data\ActiveDataProvider;
 
 class UserSearch extends User
@@ -35,7 +36,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find()->where(['is_admin' => User::STATUS_COMMON])->orWhere(['is_admin' => User::STATUS_ADMIN])->orderBy(['is_admin' => SORT_DESC]);
+        $query = User::find()->orderBy(['is_admin' => SORT_DESC]);
 
         // add conditions that should always apply here
 

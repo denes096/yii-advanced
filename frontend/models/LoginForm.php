@@ -9,6 +9,7 @@
 namespace frontend\models;
 
 
+use common\models\User;
 use Yii;
 
 class LoginForm extends \common\models\LoginForm
@@ -52,10 +53,10 @@ class LoginForm extends \common\models\LoginForm
      */
     protected function getUser()
     {
-        if ($this->_user === null) {
-            $this->_user = User::findByUserEmail($this->email);
+        if ($this->user === null) {
+            $this->user = User::find()->ofEmail($this->email)->ofIsAdmin(false)->one();
         }
 
-        return $this->_user;
+        return $this->user;
     }
 }

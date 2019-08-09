@@ -9,7 +9,7 @@
 namespace backend\controllers;
 
 
-use backend\models\User;
+use common\models\User;
 use backend\models\UserSearch;
 use backend\models\UpdateUserForm;
 use Yii;

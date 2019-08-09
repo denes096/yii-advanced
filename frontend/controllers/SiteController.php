@@ -1,8 +1,8 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\User;
 use frontend\models\ResendVerificationEmailForm;
-use frontend\models\User;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\Action;
@@ -71,39 +71,6 @@ class SiteController extends Controller
         ];
     }
 
-//    /**
-//     * Before logout we want to update the frontend/user's last login field
-//     * @param Action $action
-//     * @return bool|void
-//     * @throws BadRequestHttpException
-//     */
-//    public function beforeAction($action)
-//    {
-//        if($action->id == 'logout' && !Yii::$app->user->isGuest){
-//            $user = User::findOne(Yii::$app->user->getId());
-//            $user->lastlogintime = 'asd';
-//        }
-//
-//        if (!parent::beforeAction($action)) {
-//            return false;
-//        }
-//
-//        return true;
-//    }
-//
-//    public function afterAction($action, $result)
-//    {
-//        $result = parent::afterAction($action, $result);
-//
-//        if($action->id == 'login' && !Yii::$app->user->isGuest){
-//            $user = User::findOne(Yii::$app->user->getId());
-//            $user->current_login_time = strtotime('now'.'CEST');
-//            var_dump($user);
-//            die();
-//        }
-//        return $result;
-//    }
-
     /**
      * Displays homepage.
      *
@@ -125,9 +92,9 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            $user = User::findOne(Yii::$app->user->getId());
+        $loginModel = new LoginForm();
+        if ($loginModel->load(Yii::$app->request->post()) && $loginModel->login()) {
+            $user = User::find()->ofId(Yii::$app->user->getId())->one();
             try {
                 $user->updateLoginTime();
                 $user->save();
@@ -137,10 +104,10 @@ class SiteController extends Controller
             }
             return $this->goBack();
         } else {
-            $model->password = '';
+            $loginModel->password = '';
 
             return $this->render('login', [
-                'model' => $model,
+                'loginModel' => $loginModel,
             ]);
         }
     }
@@ -180,8 +147,6 @@ class SiteController extends Controller
         }
     }
 
-
-
     /**
      * Displays about page.
      *
@@ -199,14 +164,14 @@ class SiteController extends Controller
      */
     public function actionSignup()
     {
-        $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+        $SignupModel = new SignupForm();
+        if ($SignupModel->load(Yii::$app->request->post()) && $SignupModel->signup()) {
             Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
             return $this->goHome();
         }
 
         return $this->render('signup', [
-            'model' => $model,
+            'SignupModel' => $SignupModel,
         ]);
     }
 

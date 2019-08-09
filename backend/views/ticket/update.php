@@ -8,7 +8,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Ticket */
+/* @var $model common\models\Ticket */
 
 $this->title = 'Update Ticket: ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Tickets', 'url' => ['index']];

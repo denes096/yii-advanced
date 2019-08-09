@@ -11,7 +11,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\TicketSearch */
+/* @var $searchModel common\models\TicketSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Tickets';
@@ -43,13 +43,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'is_open:boolean:Open',
             'admin_id' => 'admin.name:text:Assigned Admin',
             ['class' => 'yii\grid\ActionColumn'],
-            ['class' => 'yii\grid\CheckboxColumn',
-                'checkboxOptions' => function($searchModel) {
-                    if($searchModel->admin_id) {
-                        return ['style' => ['display' => 'none']];
-                    }
-                    return ['value' => $searchModel->id];
-                }],
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+//                'checkboxOptions' => function($searchModel) {
+//                    if($searchModel->admin_id) {
+//                        return ['style' => ['display' => 'none']];
+//                    }
+//                    return ['value' => $searchModel->id];
+//                }
+            ],
         ],
     ]); ?>
 

@@ -130,7 +130,7 @@ class CommentController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Comment::findOne($id)) !== null) {
+        if (($model = Comment::find()->ofId($id)->one()) !== null) {
             return $model;
         }
 

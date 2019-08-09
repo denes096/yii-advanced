@@ -2,8 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\User;
 use Yii;
-use frontend\models\User;
 use frontend\models\UserSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -55,25 +55,6 @@ class UserController extends Controller
         ]);
     }
 
-
-    /**
-     * Creates a new User model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-//    public function actionSignup()
-//    {
-//        $model = new User();
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('create', [
-//            'model' => $model,
-//        ]);
-//    }
-
     /**
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -89,11 +70,11 @@ class UserController extends Controller
 
         $user = $this->findModel($id);
 
-        $model = new UpdateUserForm();
-        $model->fillFrom($user);
+        $updateUserModel = new UpdateUserForm();
+        $updateUserModel->fillFrom($user);
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $user = $model->fillTo($user);
+        if ($updateUserModel->load(Yii::$app->request->post()) && $updateUserModel->validate()) {
+            $user = $updateUserModel->fillTo($user);
             if(!$user->save()){
                 //TODO hibaüzenet
             } else {
@@ -104,23 +85,9 @@ class UserController extends Controller
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'updateUserModel' => $updateUserModel,
         ]);
     }
-
-    /**
-     * Deletes an existing User model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-//    public function actionDelete($id)
-//    {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
 
     /**
      * Finds the User model based on its primary key value.
@@ -131,7 +98,7 @@ class UserController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne($id)) !== null) {
+        if (($model = User::find()->ofId($id)->one()) !== null) {
             return $model;
         }
 
@@ -145,7 +112,7 @@ class UserController extends Controller
     public function actionProfile($id)
     {
         if ($this->validateIdentity($id)) {
-            $model = User::findOne($id);
+            $model = User::find()->ofId($id)->one();
             return $this->render('profile', [
                 'model' => $model,
             ]);

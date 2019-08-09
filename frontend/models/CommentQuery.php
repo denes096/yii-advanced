@@ -29,6 +29,10 @@ class CommentQuery extends \yii\db\ActiveQuery
         return parent::one($db);
     }
 
+    /**
+     * @param integer $id
+     * @return CommentQuery
+     */
     public function ofId($id)
     {
         return $this->andWhere(['id' => $id]);

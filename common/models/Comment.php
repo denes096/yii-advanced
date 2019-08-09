@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
-
+use frontend\models\CommentQuery;
 /**
  * This is the model class for table "comment".
  *
@@ -23,7 +23,7 @@ class Comment extends \yii\db\ActiveRecord
     /**
      * @var UploadedFile
      */
-    public $asd;
+    public $picture;
 
     /**
      * {@inheritdoc}
@@ -62,6 +62,11 @@ class Comment extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'ticket_id' => 'Ticket ID',
         ];
+    }
+
+    public static function find()
+    {
+        return new CommentQuery(get_called_class());
     }
 
     /**
@@ -104,12 +109,15 @@ class Comment extends \yii\db\ActiveRecord
         return $this->create_time = date("Y-m-d H:i:s");
     }
 
+    /**
+     * @return bool true if image was saved
+     */
     public function upload()
     {
         if(!file_exists(Url::to('@frontend_web/images/'))) {
             mkdir(Url::to('@frontend_web/images/'),0777,true);
         }
         $this->picture_url = Url::to('@frontend_web/images/') . '/' . $this->id . '.jpg';
-        $this->asd->saveAs($this->picture_url);
+        return $this->picture->saveAs($this->picture_url);
     }
 }

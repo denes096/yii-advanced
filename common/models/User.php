@@ -52,7 +52,10 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         ];
     }
 
-
+    public static function find()
+    {
+        return new UserQuery(get_called_class());
+    }
     /**
      * {@inheritdoc}
      */
@@ -185,6 +188,14 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         // TODO: Implement validateAuthKey() method.
+    }
+
+
+
+    public function updateLoginTime()
+    {
+        date_default_timezone_set('Europe/Budapest');
+        $this->lastlogintime = date("Y-m-d H:i:s");
     }
 
 }

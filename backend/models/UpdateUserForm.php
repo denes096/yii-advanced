@@ -9,6 +9,7 @@
 namespace backend\models;
 
 
+use common\models\User;
 use yii\base\Model;
 
 class UpdateUserForm extends Model

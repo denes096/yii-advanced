@@ -9,8 +9,8 @@
 namespace backend\controllers;
 
 
-use backend\models\TicketSearch;
-use backend\models\User;
+use common\models\TicketSearch;
+use common\models\User;
 use common\models\Comment;
 use Yii;
 use yii\filters\AccessControl;

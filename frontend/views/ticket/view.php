@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Ticket */
+/* @var $model common\models\Ticket */
 /* @var $comments common\models\Comment */
 /* @var $comment common\models\Comment */
 

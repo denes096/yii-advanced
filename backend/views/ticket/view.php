@@ -7,7 +7,6 @@
  */
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use backend\assets\FrontendAsset;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Ticket */
@@ -17,7 +16,6 @@ use backend\assets\FrontendAsset;
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Tickets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$frontend = FrontendAsset::register($this);
 ?>
 <div class="ticket-view">
 

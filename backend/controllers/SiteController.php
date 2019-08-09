@@ -1,7 +1,7 @@
 <?php
 namespace backend\controllers;
 
-use backend\models\User;
+use common\models\User;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;

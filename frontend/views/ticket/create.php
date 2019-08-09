@@ -3,8 +3,8 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Ticket */
-/* @var $comment_model common\models\Comment */
+/* @var $ticketModel common\models\Ticket */
+/* @var $commentModel common\models\Comment */
 
 $this->title = 'Create Ticket';
 $this->params['breadcrumbs'][] = ['label' => 'Tickets', 'url' => ['index']];
@@ -15,8 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
-        'comment_model' => $comment_model,
+        'ticketModel' => $ticketModel,
+        'commentModel' => $commentModel,
     ]) ?>
 
 </div>
