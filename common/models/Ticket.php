@@ -115,4 +115,12 @@ class Ticket extends \yii\db\ActiveRecord
         $this->modified_time = date("Y-m-d H:i:s");
         $this->createtime = date("Y-m-d H:i:s");
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLastCommentId()
+    {
+        return $this->getComments()->max('id');
+    }
 }

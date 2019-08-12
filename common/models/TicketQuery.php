@@ -11,10 +11,6 @@ use common\models\Ticket;
  */
 class TicketQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
 
     /**
      * {@inheritdoc}
@@ -52,6 +48,10 @@ class TicketQuery extends \yii\db\ActiveQuery
         return $this->andWhere(['is_open' => $isopen]);
     }
 
+    /**
+     * @param integer $id
+     * @return TicketQuery
+     */
     public function ofUserId($id)
     {
         return $this->andWhere(['user_id' => $id]);

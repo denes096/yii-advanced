@@ -120,4 +120,9 @@ class Comment extends \yii\db\ActiveRecord
         $this->picture_url = Url::to('@frontend_web/images/') . '/' . $this->id . '.jpg';
         return $this->picture->saveAs($this->picture_url);
     }
+
+    public static function getCommentById($id)
+    {
+        return self::find()->ofId($id)->one();
+    }
 }
