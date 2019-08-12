@@ -9,6 +9,7 @@ namespace console\controllers;
 
 use common\models\Ticket;
 use yii\console\Controller;
+use yii\console\ExitCode;
 
 class TicketcloseController extends Controller
 {
@@ -40,15 +41,17 @@ class TicketcloseController extends Controller
             $hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24) / (60*60));
             $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60);
 
-            if ($author_isadmin && $minutes>1) {
+            if ($author_isadmin && $minutes > 1) {
                 $ticket_model->is_open=false;
                 try {
                     $ticket_model->save();
+                    echo $ticket_model->title . " ticket closed!\n";
                 } catch (\Exception $e) {
-                    echo 'progblem during saving';
+                    echo $ticket_model->title . " progblem during saving!\n";
+                    return ExitCode::UNSPECIFIED_ERROR;
                 }
             }
         }
-        return 0;
+        return ExitCode::OK;
     }
 }
