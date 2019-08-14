@@ -4,6 +4,7 @@ namespace common\models;
 
 use common\models\TicketQuery;
 use Yii;
+use yii\helpers\HtmlPurifier;
 
 /**
  * This is the model class for table "ticket".
@@ -36,6 +37,9 @@ class Ticket extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            ['title', 'filter', 'filter' => function ($value) {
+                return \yii\helpers\HtmlPurifier::process($value);
+            }],
             [['title'], 'required'],
             [['createtime','modified_time'], 'safe'],
             [['is_open'], 'boolean'],
@@ -100,7 +104,7 @@ class Ticket extends \yii\db\ActiveRecord
         if($insert) {
             try {
                 $this->user_id = Yii::$app->user->getId();
-                self::createDate();
+                $this->lastModifiedDate();
             } catch (\Exception $e) {
                 //TODO error
             }
@@ -109,7 +113,7 @@ class Ticket extends \yii\db\ActiveRecord
         return true;
     }
 
-    public function createDate()
+    public function lastModifiedDate()
     {
         date_default_timezone_set('Europe/Budapest');
         $this->modified_time = date("Y-m-d H:i:s");

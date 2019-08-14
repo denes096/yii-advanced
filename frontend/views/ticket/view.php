@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -8,6 +9,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Ticket */
 /* @var $comments common\models\Comment */
 /* @var $comment common\models\Comment */
+/* @var $commentDataProvider yii\data\ActiveDataProvider */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Tickets', 'url' => ['index']];

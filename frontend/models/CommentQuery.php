@@ -37,4 +37,9 @@ class CommentQuery extends \yii\db\ActiveQuery
     {
         return $this->andWhere(['id' => $id]);
     }
+
+    public function ofTicketId($id)
+    {
+        return $this->andWhere(['ticket_id' => $id]);
+    }
 }

@@ -41,7 +41,7 @@ class CommentSearch extends Comment
      */
     public function search($params)
     {
-        $query = Comment::find();
+        $query = Comment::find()->ofTicketId($params['id']);
 
         // add conditions that should always apply here
 

@@ -44,9 +44,11 @@ class TicketSearch extends Ticket
         $query = Ticket::find()->orderBy(['is_open' => SORT_DESC, 'createtime' => SORT_DESC]);
 
         // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ]
         ]);
 
         $this->load($params);

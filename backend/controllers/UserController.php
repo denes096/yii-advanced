@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 
+use common\models\TicketSearch;
 use common\models\User;
 use backend\models\UserSearch;
 use backend\models\UpdateUserForm;
@@ -58,14 +59,17 @@ class UserController extends Controller
 
 
     /**
-     * Displays a single User model.
+     * Displays a single User model's tickets.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
+        $searchModel = new TicketSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('view', [
+            'dataProvider' => $dataProvider,
             'model' => $this->findModel($id),
             'tickets' => $this->findModel($id)->tickets,
         ]);

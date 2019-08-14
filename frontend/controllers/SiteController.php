@@ -98,7 +98,7 @@ class SiteController extends Controller
             try {
                 $user->updateLoginTime();
                 $user->save();
-                Yii::$app->session->setFlash('success','Success when saving login time');
+                Yii::$app->session->setFlash('success','Welcome!');
             } catch(\Exception $e) {
                 Yii::$app->session->setFlash('error','Error when saving login time');
             }

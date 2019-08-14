@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 use frontend\models\CommentQuery;
@@ -39,6 +40,10 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            ['description', 'filter', 'filter' => function ($value) {
+                return \yii\helpers\HtmlPurifier::process($value);
+            }],
+            ['description', 'trim'],
             [['description'], 'required'],
             [['create_time'], 'safe'],
             [['user_id', 'ticket_id'], 'default', 'value' => null],
@@ -49,7 +54,6 @@ class Comment extends \yii\db\ActiveRecord
             [['picture_url'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -93,7 +97,7 @@ class Comment extends \yii\db\ActiveRecord
 
         try {
             $this->user_id = Yii::$app->user->getId();
-            self::createDate();
+            $this->createDate();
         } catch (\Exception $e) {
             //TODO error
         }
@@ -114,10 +118,10 @@ class Comment extends \yii\db\ActiveRecord
      */
     public function upload()
     {
-        if(!file_exists(Url::to('@frontend_web/images/'))) {
-            mkdir(Url::to('@frontend_web/images/'),0777,true);
+        if(!file_exists(Yii::getAlias('@frontend_web').'/images/')) {
+            mkdir(Yii::getAlias('@frontend_web').'/images/',0777,true);
         }
-        $this->picture_url = Url::to('@frontend_web/images/') . '/' . $this->id . '.jpg';
+        $this->picture_url = Yii::getAlias('@frontend_web').'/images/' . '/' . $this->id . '.jpg';
         return $this->picture->saveAs($this->picture_url);
     }
 

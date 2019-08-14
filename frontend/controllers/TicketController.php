@@ -3,9 +3,11 @@ namespace frontend\controllers;
 
 use common\models\Comment;
 use common\models\Ticket;
+use frontend\models\CommentSearch;
 use Yii;
 use frontend\models\TicketSearch;
 use yii\filters\AccessControl;
+use yii\helpers\HtmlPurifier;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -62,9 +64,12 @@ class TicketController extends Controller
      */
     public function actionView($id)
     {
+//        $commentSearch = new CommentSearch();
+//        $commentDataProvider = $commentSearch->search(Yii::$app->request->queryParams);
         return $this->render('view', [
             'model' => $this->findModel($id),
             'comments' => $this->findModel($id)->comments,
+//            'commentDataProvider' => $commentDataProvider,
             ]);
     }
 
@@ -77,19 +82,26 @@ class TicketController extends Controller
     {
         $ticketModel = new Ticket();
         $commentModel = new Comment();
+        if ($ticketModel->load(Yii::$app->request->post()) && $ticketModel->validate() && $commentModel->load(Yii::$app->request->post()) && $commentModel->validate()) {
+            $connection = Yii::$app->getDb();
+            $transaction = $connection->beginTransaction();
 
-        if ($ticketModel->load(Yii::$app->request->post()) && $ticketModel->save()) {
-            $commentModel->ticket_id = $ticketModel->id;
-
-            if ($commentModel->load(Yii::$app->request->post()) && $commentModel->save()) {
+            try {
+                $ticketModel->save();
+                $commentModel->ticket_id = $ticketModel->id;
+                $commentModel->save();
                 $commentModel->picture = UploadedFile::getInstance($commentModel,'picture');
-
                 if ($commentModel->picture) {
                     $commentModel->upload();
                     $commentModel->save();
                 }
+                $transaction->commit();
                 return $this->redirect(['view', 'id' => $ticketModel->id]);
+            } catch (\Throwable $e) {
+                $transaction->rollBack();
+                throw  $e;
             }
+
         }
         return $this->render('create', [
             'ticketModel' => $ticketModel,

@@ -30,6 +30,9 @@ class TicketSearch extends \common\models\TicketSearch
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ]
         ]);
 
         $this->load($params);

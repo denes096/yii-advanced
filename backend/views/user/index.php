@@ -19,20 +19,29 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $index, $widget, $grid){
+            if($model->is_admin){
+                return ['class' => 'warning'];
+            }
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
             'name',
             'email:email',
             'password',
-            'regtime',
-            'lastlogintime',
+            [
+                'attribute' => 'regtime',
+                'format' =>  ['date', 'php:Y-m-d H:i:s'],
+                'filter' => false,
+            ],
+            [
+                'attribute' => 'lastlogintime',
+                'format' =>  ['date', 'php:Y-m-d H:i:s'],
+                'filter' => false,
+            ],
             'is_admin:boolean',
 
             ['class' => 'yii\grid\ActionColumn'],

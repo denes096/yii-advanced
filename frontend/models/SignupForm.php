@@ -4,6 +4,7 @@ namespace frontend\models;
 use common\models\User;
 use Yii;
 use yii\base\Model;
+use yii\helpers\HtmlPurifier;
 
 /**
  * Signup form
@@ -21,16 +22,19 @@ class SignupForm extends Model
     public function rules()
     {
         return [
+            ['name', 'filter', 'filter' => function ($value) {
+                return \yii\helpers\HtmlPurifier::process($value);
+            }],
             ['name', 'trim'],
             ['name', 'required'],
-            ['name', 'unique', 'targetClass' => '\frontend\models\User', 'message' => 'This username has already been taken.'],
             ['name', 'string', 'min' => 2, 'max' => 255],
+            ['name', 'validateXSS'],
 
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\frontend\models\User', 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 8],

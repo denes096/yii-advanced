@@ -6,6 +6,7 @@
  * Time: 2:41 PM
  */
 
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -13,6 +14,7 @@ use yii\widgets\DetailView;
 /* @var $model backend\models\User */
 /* @var $ticket common\models\Ticket */
 /* @var $tickets common\models\Ticket */
+/* @var $dataProvider \yii\data\ActiveDataProvider */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
@@ -22,17 +24,28 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title.'\'s all Tickets: ') ?></h1>
 
-    <?php foreach ($tickets as $ticket): ?>
-    <div class="row" style="padding: 10px" id="comment_div">
-        <div class="col">
-                <div class="col bg-primary" id="created_by_at">
-                    <?= Html::encode("Created by: {$ticket->user->name} at: {$ticket->createtime}")?>
-                </div>
-                <div class="col bg-info" id="created_by_at">
-                    <?= Html::encode($ticket->title)?>
-                </div>
-            </div>
-        </div>
-        <?php endforeach; ?>
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'rowOptions' => function ($model, $index, $widget, $grid){
+            if(!$model->is_open){
+                return ['class' => 'warning'];
+            }
+        },
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            'title',
+            'user.name:text:created by',
+            'createtime:text:created at',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}',
+                'buttons' => [
+                    'view' => function ($url, $model, $key) {
+                        return Html::a('View', "/ticket/view/{$model->id}");
+                    },
+                ],
+            ],
+        ],
+    ]); ?>
 
-    </div>
+</div>
